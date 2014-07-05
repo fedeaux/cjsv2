@@ -54,11 +54,11 @@ class CJSV
     Dir.foreach(path) do |item|
       next if item == '.' or item == '..'
 
-      if File.directory? path+item then
+      if File.directory? path+item and false then
         namespace[item] = {} unless namespace[item]
         self.parse_directory path+item+'/', namespace[item]
 
-      elsif item.split('.').last == 'cjsv' then
+      elsif item.split('.').last == 'cjsv' and item == 'embedded_coffee.cjsv' then
         function = self.parse_file path+item
         namespace[function.name] = function.body
       end
