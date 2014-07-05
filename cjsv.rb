@@ -54,11 +54,11 @@ class CJSV
     Dir.foreach(path) do |item|
       next if item == '.' or item == '..'
 
-      if File.directory? path+item and false then
+      if File.directory? path+item then
         namespace[item] = {} unless namespace[item]
         self.parse_directory path+item+'/', namespace[item]
 
-      elsif item.split('.').last == 'cjsv' and item == 'lines.cjsv' then
+      elsif item.split('.').last == 'cjsv' then
         function = self.parse_file path+item
         namespace[function.name] = function.body
       end
@@ -70,11 +70,9 @@ class CJSV
   end
 
   def parse()
-    ### self.output_line "@"+@config['object_name']+" = \n"
-    @path = @config['input_dir']
     @namespace = {}
 
-    self.parse_directory @path, @namespace
+    self.parse_directory @config['input_dir'], @namespace
 
     generate_object
 
@@ -110,7 +108,7 @@ class CJSV
       add_to_object name, element
     end
 
-    File.open('out.coffee', 'w') { |f| f.write @object }
+    File.open(@config['output_dir']+'out.coffee', 'w') { |f| f.write @object }
   end
 end
 

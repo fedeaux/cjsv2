@@ -1,9 +1,9 @@
--# %p#id.two.classe{simple = attribute} And text -# Inline comment
+%p#id.two.classe{simple = attribute} And text -# Inline comment
 
--# %p#id.one-class{simple = #{variable_attribute}} And text -# Inline comment
+%p#id.one-class{simple = #{variable_attribute}} And text -# Inline comment
 
--# %p##{variable_id}.one-class.#{variable_class}{simple = #{variable_attribute}} And variable #{text}
+%p##{variable_id}.one-class.#{variable_class}{simple = #{variable_attribute}} And variable #{text}
 
--# %span{#{variable_attribute_name} = #{with_variable_attribute_value}}
+%span{#{variable_attribute_name} = #{with_variable_attribute_value}}
 
 %span{multiple=attributes}{more-than=three}{attri=with space}{can_i_have=a lot of attrbutes?}{please=#{im begging you}}
