@@ -1,0 +1,14 @@
+- if message
+  %p.warning #{message}
+
+- for queijo in salada
+  %span #{queijo}
+
+- if simple_nesting
+
+  - unless double_nesting
+    %img{src=neymar.png}
+
+  - if omg
+    - for queijo in salada
+      %span #{queijo}
