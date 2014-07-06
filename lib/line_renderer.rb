@@ -9,6 +9,8 @@ module CJSV
       @function_body += ' '*@spaces_per_indent+'  _outstream=""'+"\n"
       @current_indentation = ''
       @cjsv_lines_queue = []
+
+      @render_strategy = nil
     end
 
     def add(indentation, parsed_line, close = false)
@@ -34,7 +36,20 @@ module CJSV
     end
 
     def render
-      render_condensed
+      unless @render_strategy
+        render_simple
+      else
+        render_condensed
+      end
+
+    end
+
+    def render_simple
+      if @cjsv_lines_queue.length > 0
+        @cjsv_lines_queue.each { |queue_element|
+          @function_body += cjsv_single_line queue_element_html queue_element
+        }
+      end
     end
 
     def render_pretty
