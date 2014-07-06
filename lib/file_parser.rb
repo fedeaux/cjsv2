@@ -50,6 +50,7 @@ module CJSV
       @function_body += ' '*@spaces_per_indent+'  _outstream=""'+"\n"
 
       @unclosed_tags = []
+      @spawn_blocks = []
 
       @parsed_lines.each do |parsed_line|
         if parsed_line.is_a? CjsvLineParser
@@ -62,6 +63,7 @@ module CJSV
 
         elsif parsed_line.is_a? CoffeeLineParser
           @function_body += coffee_line parsed_line.line
+          @spawn_blocks << parsed_line if parsed_line.span_block?
         end
       end
 
@@ -71,7 +73,7 @@ module CJSV
     end
 
     def cjsv_line(html)
-      "\n  "+' '*(@spaces_per_indent)+'_oustream += "'+html+'"'
+      "\n  "+' '*(@spaces_per_indent)*@spawn_blocks.length+' '*(@spaces_per_indent)+'_oustream += "'+html+'"'
     end
 
     def coffee_line(coffee)
