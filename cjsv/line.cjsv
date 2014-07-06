@@ -1,8 +1,18 @@
-#por-que
-  %p Alface
-  %p Queijo
-    %label Alface
-  #p
-    %a
+#mas
+  #sera
+  #que
+    .foi
+      - if foi
+        .algreia
+      - else
+        .tem
+          .que
+        .fazer.quebrar
+          .mesmo
+  - if oi
+    #oi
       %span
-    %p
+      - while sera
+        - if sera.sim
+          #felicidade
+        - a = b

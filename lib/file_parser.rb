@@ -64,20 +64,9 @@ module CJSV
       @spawn_blocks.pop
     end
 
-    def close_blocks_and_tags_greater_to_this_block_level indentation
-      closed = false
-
-      while spawn_blocks > indentation
-        closed = true
+    def close_blocks_that_were_opened_in_a_higher_or_equal_indentation indentation
+      while spawn_blocks > 0 and @spawn_blocks.last.indentation >= indentation
         close_tags_in_block_and_finish_it spawn_blocks
-
-        if spawn_blocks == 0
-          break
-        end
-      end
-
-      unless closed
-        close_tags spawn_blocks, indentation
       end
     end
 
@@ -94,7 +83,9 @@ module CJSV
       @spawn_blocks = []
 
       @parsed_lines.each do |parsed_line|
-        close_blocks_and_tags_greater_to_this_block_level parsed_line.indentation
+        close_blocks_that_were_opened_in_a_higher_or_equal_indentation parsed_line.indentation
+        close_tags spawn_blocks, parsed_line.indentation
+
         @cjsv_lines_renderer.add indentation, parsed_line
 
         if parsed_line.is_a? CjsvLineParser
@@ -105,7 +96,8 @@ module CJSV
         end
       end
 
-      close_blocks_and_tags_greater_to_this_block_level 0
+      close_blocks_that_were_opened_in_a_higher_or_equal_indentation 0
+      close_tags 0, 0
     end
 
     def indentation

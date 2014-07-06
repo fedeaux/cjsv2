@@ -50,6 +50,7 @@ module CJSV
           @function_body += cjsv_single_line queue_element_html queue_element
         }
       end
+      @cjsv_lines_queue = []
     end
 
     def render_pretty
