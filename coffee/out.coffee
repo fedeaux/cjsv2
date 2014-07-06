@@ -6,7 +6,7 @@
     _oustream += "</p>"
     _oustream += "<p>Queijo"
     _oustream += "</p>"
-    _oustream += "<a>limonada suiça"
+    _oustream += "<a>Limonada Suiça com Limão"
     _oustream += "</a>"
 
   embedded_coffee: () ->
@@ -65,7 +65,9 @@
     _oustream += "</div>"
     _oustream += "<div id=\"profile\">"
     _oustream += "  <div id=\"profile-picture\" data-source=\"img/profile picture.png\">"
-    _oustream += "  <div id=\"profile-name\">#{name}"
+    _oustream += "  <div id=\"profile-first-name\">#{first-name}"
+    _oustream += "  <div id=\"profile-last-name\">#{last-name}"
+    _oustream += "  </div>"
     _oustream += "  </div>"
     _oustream += "  </div>"
     _oustream += "</div>"
@@ -73,6 +75,12 @@
   sub:
     directories:
       must:
+        semifinal: () ->      
+          _outstream=""
+      
+          _oustream += "<div id=\"claro_ue\">"
+          _oustream += "</div>"
+
         work:
           final_showdown: () ->        
             _outstream=""
@@ -95,4 +103,6 @@
             _oustream += "  <div id=\"profile-name\">#{name}"
             _oustream += "  </div>"
             _oustream += "  </div>"
+            _oustream += "</div>"
+            _oustream += "<div id=\"placeholder\">"
             _oustream += "</div>"

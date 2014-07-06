@@ -4,7 +4,7 @@ require 'rubygems'
 require 'listen'
 require 'fileutils'
 require 'optparse'
-
+require 'colorize'
 
 require './lib/file_parser.rb'
 
@@ -68,7 +68,7 @@ module CJSV
 
         elsif item.split('.').last == 'cjsv' then
           function = self.parse_file path+item
-          namespace[function.name] = function.body if function
+          namespace[function.name] = function if function
         end
       end
     end
@@ -79,16 +79,45 @@ module CJSV
 
     def file_changed_or_added(file_name)
       function = FileParser.new file_name
-      namespace = get_namespace_directly file_name
 
-      namespace[function.name] = function.body
+      namespace = get_namespace_directly file_name
+      namespace[function.name] = function
+
+      generate_object
+    end
+
+    def file_removed(file_name)
+
+      file_name = file_name
+        .gsub(@config['input_dir'], '')
+        .gsub('.cjsv', '')
+
+      parts = file_name.split '/'
+
+      if parts.length == 1
+        @namespace.delete file_name
+
+      else
+        namespace = @namespace
+        parts[0..-2].each { |part| namespace = namespace[part] }
+        namespace.delete parts.last
+      end
+
       generate_object
     end
 
     def get_namespace_directly(file_name)
-      file_name.gsub! @config['input_dir'], ''
+      file_name = file_name
+        .gsub(@config['input_dir'], '')
+        .gsub('.cjsv', '')
+
+      parts = file_name.split '/'
+
+      return @namespace if parts.length == 1
+
       namespace = @namespace
-      file_name.split('/').each { |part|
+
+      parts[0..-2].each { |part|
         unless namespace[part]
           namespace[part] = {}
         end
@@ -124,8 +153,8 @@ module CJSV
         end
 
       else
-        @object += '  '*level+name
-        @object += element.split("\n").map{|line| '  '*(level - 1)+line }.join("\n")+"\n"
+        @object += '  '*level+name+': '+element.signature
+        @object += element.body.split("\n").map{|line| '  '*(level - 1)+line }.join("\n")+"\n"
       end
     end
 
@@ -154,18 +183,24 @@ if cjsv.watch? then
       notifier = []
 
       if modified.length > 0
-        notifier << Time.now.strftime("%H:%M")+' - [modified] '+modified.first
-        cjsv.file_changed_or_added relative_path modified.first
+        file = relative_path modified.first
+        notifier << Time.now.strftime("%H:%M")+' - [modified] '+file
+        cjsv.file_changed_or_added file
+        puts notifier.join('\n').light_green
 
       elsif added.length > 0
-        notifier << Time.now.strftime("%H:%M")+' - [created] '+added.first
-        cjsv.file_changed_or_added relative_path modified.first
+        file = relative_path added.first
+        notifier << Time.now.strftime("%H:%M")+' - [created] '+file
+        cjsv.file_changed_or_added file
+        puts notifier.join('\n').light_green
 
       elsif removed.length > 0
-        notifier << Time.now.strftime("%H:%M")+' - [removed] '+removed.first
+        file = relative_path removed.first
+        notifier << Time.now.strftime("%H:%M")+' - [removed] '+file
+        cjsv.file_removed file
+        puts notifier.join("\n").red
       end
 
-      puts notifier
     end
 
     listener.start

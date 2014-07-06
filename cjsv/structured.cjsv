@@ -8,4 +8,5 @@
 
 #profile
   #profile-picture{data-source=img/profile picture.png}
-  #profile-name #{name}
+  #profile-first-name #{first-name}
+  #profile-last-name #{last-name}

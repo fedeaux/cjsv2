@@ -21,6 +21,10 @@ module CJSV
       @function_name
     end
 
+    def signature
+      '() ->'
+    end
+
     def sanitize_and_verify()
       @spaces_per_indent = 2
       @lines = @lines.reject{|line| line =~ /^\s*$/}.map { |line|
@@ -112,7 +116,7 @@ module CJSV
     end
 
     def self.function_name_by_file(file_name)
-      file_name.split('/').last.gsub(/.cjsv$/, '')+': () ->'
+      file_name.split('/').last.gsub(/.cjsv$/, '')
     end
   end
 
