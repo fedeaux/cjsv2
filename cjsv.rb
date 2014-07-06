@@ -6,13 +6,13 @@ require 'fileutils'
 require 'optparse'
 require 'colorize'
 
-require './lib/file_parser.rb'
+require_relative 'lib/file_parser.rb'
 
-require './lib/coffee_line_parser.rb'
-require './lib/cjsv_line_parser.rb'
-require './lib/args_line_parser.rb'
-require './lib/factory_line_parser.rb'
-require './lib/line_renderer.rb'
+require_relative 'lib/coffee_line_parser.rb'
+require_relative 'lib/cjsv_line_parser.rb'
+require_relative 'lib/args_line_parser.rb'
+require_relative 'lib/factory_line_parser.rb'
+require_relative 'lib/line_renderer.rb'
 
 module CJSV
   class CJSV

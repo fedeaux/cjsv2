@@ -130,17 +130,17 @@ module CJSV
       if parts.length > 1
         part_0 = parts[0]
         parts = parts[1..-1].map { |part|
-          part.sub '}', 'CSJV_INTERPOLATE_CLOSE'
+          part.sub '}', 'CJSV_INTERPOLATE_CLOSE'
         }
-        @line = part_0+'CSJV_INTERPOLATE_OPEN'+parts.join('CSJV_INTERPOLATE_OPEN')
+        @line = part_0+'CJSV_INTERPOLATE_OPEN'+parts.join('CJSV_INTERPOLATE_OPEN')
       end
 
     end
 
     def postprocess_html
       @html = @html
-        .gsub('CSJV_INTERPOLATE_OPEN', '#{')
-        .gsub('CSJV_INTERPOLATE_CLOSE', '}')
+        .gsub('CJSV_INTERPOLATE_OPEN', '#{')
+        .gsub('CJSV_INTERPOLATE_CLOSE', '}')
         .gsub('"', '\"')
     end
 
