@@ -33,6 +33,12 @@
     _oustream += "<div id=\"level-0\">"
     _oustream += "</div>"
 
+  foo: (name) ->
+    _outstream=""
+
+    _oustream += "<p>Olá #{name}"
+    _oustream += "</p>"
+
   lines: () ->
     _outstream=""
 
@@ -106,9 +112,3 @@
             _oustream += "</div>"
             _oustream += "<div id=\"placeholder\">"
             _oustream += "</div>"
-
-  foo: (name) ->
-    _outstream=""
-
-    _oustream += "<p>Olá #{name}"
-    _oustream += "</p>"

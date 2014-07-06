@@ -12,6 +12,7 @@ require './lib/coffee_line_parser.rb'
 require './lib/cjsv_line_parser.rb'
 require './lib/args_line_parser.rb'
 require './lib/factory_line_parser.rb'
+require './lib/line_renderer.rb'
 
 module CJSV
   class CJSV
