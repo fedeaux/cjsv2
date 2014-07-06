@@ -77,7 +77,7 @@ module CJSV
       FileParser.new file_name if File.exist? file_name
     end
 
-    def file_changed(file_name)
+    def file_changed_or_added(file_name)
       function = FileParser.new file_name
       namespace = get_namespace_directly file_name
 
@@ -89,11 +89,11 @@ module CJSV
       file_name.gsub! @config['input_dir'], ''
       namespace = @namespace
       file_name.split('/').each { |part|
-        if namespace[part]
-          namespace = namespace[part]
-        else
-          return namespace
+        unless namespace[part]
+          namespace[part] = {}
         end
+
+        namespace = namespace[part]
       }
 
       namespace
@@ -155,10 +155,11 @@ if cjsv.watch? then
 
       if modified.length > 0
         notifier << Time.now.strftime("%H:%M")+' - [modified] '+modified.first
-        cjsv.file_changed relative_path modified.first
+        cjsv.file_changed_or_added relative_path modified.first
 
       elsif added.length > 0
         notifier << Time.now.strftime("%H:%M")+' - [created] '+added.first
+        cjsv.file_changed_or_added relative_path modified.first
 
       elsif removed.length > 0
         notifier << Time.now.strftime("%H:%M")+' - [removed] '+removed.first
