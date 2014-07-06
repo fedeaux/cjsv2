@@ -37,6 +37,16 @@ module CJSV
       render_condensed
     end
 
+    def render_pretty
+      if @cjsv_lines_queue.length == 1 or @cjsv_lines_queue.length == 2
+        render_condensed
+      elsif @cjsv_lines_queue.length > 2
+        @function_body += cjsv_first_line queue_element_html @cjsv_lines_queue.first
+        @function_body += cjsv_inner_line @cjsv_lines_queue[1..-2].map { |e| queue_element_html(e) }.join ''
+        @function_body += cjsv_last_line queue_element_html @cjsv_lines_queue.last
+      end
+    end
+
     def render_condensed
       if @cjsv_lines_queue.length > 0
         @function_body += cjsv_single_line @cjsv_lines_queue.map { |e| queue_element_html(e).strip }.join ''
@@ -47,6 +57,18 @@ module CJSV
 
     def cjsv_single_line(html)
       @current_indentation+'_oustream += "'+html+'"'
+    end
+
+    def cjsv_first_line(html)
+      @current_indentation+'_oustream += "'+html+"\n"
+    end
+
+    def cjsv_inner_line(html)
+      @current_indentation+'              '+html+"\n"
+    end
+
+    def cjsv_last_line(html)
+      @current_indentation+'              '+html+"\"\n"
     end
 
     def coffee_line(coffee)
