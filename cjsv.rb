@@ -15,7 +15,6 @@ require './lib/factory_line_parser.rb'
 module CJSV
   class CJSV
     def initialize()
-
       @config = {
         'debug' => false,
         'input_dir' => 'cjsv/',
@@ -55,37 +54,61 @@ module CJSV
       @self_enclosed_tags = ['img', 'br', 'hr', 'input']
     end
 
+    def watch?
+      @config['watch_directories']
+    end
+
     def parse_directory(path, namespace)
       Dir.foreach(path) do |item|
         next if item == '.' or item == '..'
 
-        if File.directory? path+item and false then
+        if File.directory? path+item then
           namespace[item] = {} unless namespace[item]
           self.parse_directory path+item+'/', namespace[item]
 
-        elsif item.split('.').last == 'cjsv' and item == 'embedded_coffee.cjsv' then
+        elsif item.split('.').last == 'cjsv' then
           function = self.parse_file path+item
-          namespace[function.name] = function.body
+          namespace[function.name] = function.body if function
         end
       end
     end
 
     def parse_file(file_name)
-      FileParser.new(file_name)
+      FileParser.new file_name if File.exist? file_name
+    end
+
+    def file_changed(file_name)
+      function = FileParser.new file_name
+      namespace = get_namespace_directly file_name
+
+      namespace[function.name] = function.body
+      generate_object
+    end
+
+    def get_namespace_directly(file_name)
+      file_name.gsub! @config['input_dir'], ''
+      namespace = @namespace
+      file_name.split('/').each { |part|
+        if namespace[part]
+          namespace = namespace[part]
+        else
+          return namespace
+        end
+      }
+
+      namespace
     end
 
     def parse()
       @namespace = {}
-
       self.parse_directory @config['input_dir'], @namespace
-
       generate_object
 
       # # # #Add helper functions
       # # # self.output_line self.adjust_indentation File.open(@config['helpers_filename']).read
 
-      # # # #Make optmizations
-      # # # self.optmize
+      # Make optmizations
+      # self.optmize
 
       # # # self.write_output
     end
@@ -121,21 +144,33 @@ end
 cjsv = CJSV::CJSV.new
 cjsv.parse
 
-  # if cjsv.watch? then
-  #   begin
-  #     listener = Listen.to('.', :only => /\.cjsv$/) do |modified, added, removed|
-  #       puts Time.now.strftime("%H:%M:%S")
+def relative_path file_name
+  file_name.gsub Dir.pwd+'/', ''
+end
 
-  #       trigger = 'changed '+modified.join('/')+'/'+added.join('/')+'/'+removed.join('/')
+if cjsv.watch? then
+  begin
+    listener = Listen.to('.', :only => /\.cjsv$/) do |modified, added, removed|
+      notifier = []
 
-  #       cjsv = JSV.new
-  #       cjsv.parse
-  #     end
+      if modified.length > 0
+        notifier << Time.now.strftime("%H:%M")+' - [modified] '+modified.first
+        cjsv.file_changed relative_path modified.first
 
-  #     listener.start
-  #     sleep
+      elsif added.length > 0
+        notifier << Time.now.strftime("%H:%M")+' - [created] '+added.first
 
-  #   rescue SystemExit, Interrupt
-  #     puts 'Abort'
-  #   end
-  # end
+      elsif removed.length > 0
+        notifier << Time.now.strftime("%H:%M")+' - [removed] '+removed.first
+      end
+
+      puts notifier
+    end
+
+    listener.start
+    sleep
+
+  rescue SystemExit, Interrupt
+    puts 'Abort'
+  end
+end

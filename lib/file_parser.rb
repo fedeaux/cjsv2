@@ -45,21 +45,50 @@ module CJSV
       generate_function_body
     end
 
+    def close_tags(block_level, target_indentation)
+      while @unclosed_tags[block_level] and @unclosed_tags[block_level].length > 0 and @unclosed_tags[block_level].last.indentation >= target_indentation
+        @function_body += cjsv_line @unclosed_tags[block_level].pop.close
+      end
+    end
+
+    def add_unclosed_tag(parsed_line)
+      @unclosed_tags[@spawn_blocks.length] ||= []
+      @unclosed_tags[@spawn_blocks.length] << parsed_line
+    end
+
+    # def there_is_a_block_that_was_opened_in_this_indentation? indentation
+    #   @spawn_blocks.length > 0 and @spawn_blocks.last.indentation >= indentation
+    # end
+
+    def close_tags_in_block_and_finish_it indentation
+      #close tags
+      close_tags @spawn_blocks.length, indentation
+
+      #finish_block
+      @spawn_blocks.pop
+    end
+
+    def close_blocks_and_tags_greater_than_this_indentation indentation
+      while @spawn_blocks.length >= indentation
+        close_tags_in_block_and_finish_it @spawn_blocks.length
+
+        break if @spawn_blocks.length == 0
+      end
+    end
+
     def generate_function_body
       @function_body = "\n"
       @function_body += ' '*@spaces_per_indent+'  _outstream=""'+"\n"
 
-      @unclosed_tags = []
+      @unclosed_tags = {}
       @spawn_blocks = []
 
       @parsed_lines.each do |parsed_line|
-        if parsed_line.is_a? CjsvLineParser
-          while @unclosed_tags.length > 0 and @unclosed_tags.last.indentation >= parsed_line.indentation
-            @function_body += cjsv_line @unclosed_tags.pop.close
-          end
+        close_blocks_and_tags_greater_than_this_indentation parsed_line.indentation
 
+        if parsed_line.is_a? CjsvLineParser
           @function_body += cjsv_line parsed_line.html
-          @unclosed_tags << parsed_line unless parsed_line.is_self_enclosed_tag?
+          add_unclosed_tag parsed_line unless parsed_line.is_self_enclosed_tag?
 
         elsif parsed_line.is_a? CoffeeLineParser
           @function_body += coffee_line parsed_line.line
@@ -67,17 +96,19 @@ module CJSV
         end
       end
 
-      while @unclosed_tags.length > 0
-        @function_body += cjsv_line @unclosed_tags.pop.close
-      end
+      close_blocks_and_tags_greater_than_this_indentation 0
+    end
+
+    def indentation
+      "\n  "+' '*(@spaces_per_indent)*@spawn_blocks.length+' '*(@spaces_per_indent)
     end
 
     def cjsv_line(html)
-      "\n  "+' '*(@spaces_per_indent)*@spawn_blocks.length+' '*(@spaces_per_indent)+'_oustream += "'+html+'"'
+      indentation+'_oustream += "'+html+'"'
     end
 
     def coffee_line(coffee)
-      "\n  "+' '*(@spaces_per_indent)+coffee
+      indentation+coffee
     end
 
     def self.function_name_by_file(file_name)

@@ -20,6 +20,7 @@ module CJSV
     end
 
     def preprocess_line
+      @indentation = @line.scan(/^\s*/)[0].size/@spaces_per_indent
       @line = @line.gsub(LineParserFactory.coffee_line_regex, '').strip
     end
 
