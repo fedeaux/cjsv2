@@ -22,6 +22,7 @@ module CJSV
     end
 
     def signature
+      return @arguments_line.line+' ->' if @arguments_line
       '() ->'
     end
 
@@ -38,12 +39,12 @@ module CJSV
       @lines.each do |line|
         parsed_line = LineParserFactory.create(line, @spaces_per_indent)
 
-        # if parsed_line.is_a? == CjsvLineParser
-        #   @arguments_line = parsed_line
+        if parsed_line.is_a? ArgsLineParser
+          @arguments_line = parsed_line
 
-        # else
-        @parsed_lines << parsed_line
-        # end
+        else
+          @parsed_lines << parsed_line
+        end
       end
 
       generate_function_body

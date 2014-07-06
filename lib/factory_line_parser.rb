@@ -6,18 +6,16 @@ module CJSV
 
       identify_line
 
-      if @type == CoffeeLineParser
-        return CoffeeLineParser.new line, spaces_per_indent
-
-      elsif @type == CjsvLineParser
-        return CjsvLineParser.new line, spaces_per_indent
-      end
+      return @type.new line, spaces_per_indent
     end
 
     def self.identify_line
       @type = 'CJSV_ARGS_LINE'
 
-      if (@line =~ coffee_line_regex) != nil
+      if (@line =~ args_line_regex) != nil
+        @type = ArgsLineParser
+
+      elsif (@line =~ coffee_line_regex) != nil
         @type = CoffeeLineParser
 
       else
@@ -28,6 +26,10 @@ module CJSV
 
     def self.coffee_line_regex
       /^\s*-/
+    end
+
+    def self.args_line_regex
+      /^\s*\(/
     end
   end
 end

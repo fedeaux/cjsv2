@@ -10,6 +10,7 @@ require './lib/file_parser.rb'
 
 require './lib/coffee_line_parser.rb'
 require './lib/cjsv_line_parser.rb'
+require './lib/args_line_parser.rb'
 require './lib/factory_line_parser.rb'
 
 module CJSV
@@ -159,13 +160,13 @@ module CJSV
     end
 
     def generate_object
-      @object = @config['object_name']+':'
+      @object = @config['object_name']+' = '
 
       @namespace.each_pair do |name, element|
         add_to_object name, element
       end
 
-      File.open(@config['output_dir']+'out.coffee', 'w') { |f| f.write @object }
+      File.open(@config['output_dir']+@config['output_filename'], 'w') { |f| f.write @object }
     end
   end
 end
