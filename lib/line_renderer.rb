@@ -10,7 +10,7 @@ module CJSV
       @current_indentation = ''
       @cjsv_lines_queue = []
 
-      @render_strategy = nil
+      @render_strategy = 'condensed'
     end
 
     def add(indentation, parsed_line, close = false)
@@ -36,9 +36,9 @@ module CJSV
     end
 
     def render
-      unless @render_strategy
+      if not @render_strategy
         render_simple
-      else
+      elsif @render_strategy == 'condensed'
         render_condensed
       end
 
@@ -72,11 +72,11 @@ module CJSV
     end
 
     def cjsv_single_line(html)
-      @current_indentation+'_oustream += "'+html+'"'
+      @current_indentation+'_outstream += "'+html+'"'
     end
 
     def cjsv_first_line(html)
-      @current_indentation+'_oustream += "'+html+"\n"
+      @current_indentation+'_outstream += "'+html+"\n"
     end
 
     def cjsv_inner_line(html)
