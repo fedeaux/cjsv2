@@ -1,7 +1,6 @@
 module CJSV
   class LineRenderer
     def initialize(spaces_per_indent, file_parser)
-
       @spaces_per_indent = spaces_per_indent
       @file_parser = file_parser
 
@@ -24,6 +23,9 @@ module CJSV
 
       elsif parsed_line.is_a? CoffeeLineParser
         @function_body += coffee_line parsed_line.line
+
+      elsif parsed_line.is_a? RenderLineParser
+        @function_body += render_line parsed_line.line
       end
     end
 
@@ -89,6 +91,10 @@ module CJSV
 
     def coffee_line(coffee)
       @current_indentation+coffee
+    end
+
+    def render_line(renderer)
+      @current_indentation+'_outstream += CJSV.'+renderer+'\n'
     end
 
     def function_body

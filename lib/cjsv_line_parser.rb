@@ -1,8 +1,9 @@
 module CJSV
   class CjsvLineParser
-    def initialize(line, spaces_per_indent)
+    def initialize(line, spaces_per_indent, cjsv_instance)
       @line = line
       @spaces_per_indent = spaces_per_indent
+      @cjsv_instance = cjsv_instance
 
       @state = ['none']
       @tokens = {
@@ -144,6 +145,24 @@ module CJSV
         .gsub('"', '\"')
     end
 
+    def postprocess_model
+      process_shortcuts
+    end
+
+    def process_shortcuts
+      process_tags_shortcuts
+    end
+
+    def process_tags_shortcuts
+      if @cjsv_instance.config['tags_shortcuts'][@tokens['tag']]
+        tag_shortcut = @cjsv_instance.config['tags_shortcuts'][@tokens['tag']]
+
+        @tokens['tag'] = tag_shortcut['tag']
+        @tokens['attr'].merge! tag_shortcut['attributes'] if tag_shortcut['attributes']
+
+      end
+    end
+
     def parse
       preprocess_line
 
@@ -153,6 +172,7 @@ module CJSV
         self.take_action
       end
 
+      postprocess_model
       generate_html
     end
 

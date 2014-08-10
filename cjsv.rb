@@ -11,8 +11,10 @@ require_relative 'lib/file_parser.rb'
 require_relative 'lib/coffee_line_parser.rb'
 require_relative 'lib/cjsv_line_parser.rb'
 require_relative 'lib/args_line_parser.rb'
+require_relative 'lib/render_line_parser.rb'
 require_relative 'lib/factory_line_parser.rb'
 require_relative 'lib/line_renderer.rb'
+require_relative 'extends.rb'
 
 module CJSV
   class CJSV
@@ -20,13 +22,11 @@ module CJSV
       @config = {
         'debug' => false,
         'input_dir' => 'cjsv/',
-        'output_dir' => 'coffee/',
+        'output_dir' => 'app/',
         'output_filename' => 'cjsv.coffee',
         'helpers_filename' => File.dirname(__FILE__)+'/helpers.coffee',
         'output_generated_file' => false,
         'watch_directories' => true,
-        'attributes_shorcuts' => {},
-        'tags_shorcuts' => {},
         'optmizations' => ['delete_comments', 'shrink_blocks'],
         'object_name' => '@CJSV'
       }
@@ -47,6 +47,8 @@ module CJSV
         '\+' => '__JSV_PLUS_SIGN_PLACEHOLDER_4712891294__'
       }
 
+      @config.merge!(extends)
+
       if File.exist?('.jsv-config.rb') then
         require './.jsv-config.rb'
         puts "using .jsv-config"
@@ -54,6 +56,10 @@ module CJSV
       end
 
       @self_enclosed_tags = ['img', 'br', 'hr', 'input']
+    end
+
+    def config
+      @config
     end
 
     def watch?
@@ -76,11 +82,11 @@ module CJSV
     end
 
     def parse_file(file_name)
-      FileParser.new file_name if File.exist? file_name
+      FileParser.new file_name, self if File.exist? file_name
     end
 
     def file_changed_or_added(file_name)
-      function = FileParser.new file_name
+      function = FileParser.new file_name, self
 
       namespace = get_namespace_directly file_name
       namespace[function.name] = function

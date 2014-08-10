@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 module CJSV
   class FileParser
-    def initialize(file_name)
+    def initialize(file_name, cjsv_instance)
       @coffee_indent = 0
       @cjsv_indent = 0
+      @cjsv_instance = cjsv_instance
 
       @function_name = FileParser.function_name_by_file file_name
 
@@ -38,7 +39,7 @@ module CJSV
       @parsed_lines = []
 
       @lines.each do |line|
-        parsed_line = LineParserFactory.create(line, @spaces_per_indent)
+        parsed_line = LineParserFactory.create(line, @spaces_per_indent, @cjsv_instance)
 
         if parsed_line.is_a? ArgsLineParser
           @arguments_line = parsed_line

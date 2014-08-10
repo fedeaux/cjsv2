@@ -1,5 +1,5 @@
 module CJSV
-  class CoffeeLineParser
+  class RenderLineParser
     def initialize(line, spaces_per_indent, cjsv_instance)
       @line = line
       @spaces_per_indent = spaces_per_indent
@@ -23,7 +23,7 @@ module CJSV
 
     def preprocess_line
       @indentation = @line.scan(/^\s*/)[0].size/@spaces_per_indent
-      @line = @line.gsub(LineParserFactory.coffee_line_regex, '').strip
+      @line = @line.gsub(LineParserFactory.render_line_regex, '').strip
     end
 
     def parse
