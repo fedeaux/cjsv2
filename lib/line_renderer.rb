@@ -94,7 +94,7 @@ module CJSV
     end
 
     def render_line(renderer)
-      @current_indentation+'_outstream += CJSV.'+renderer+'\n'
+      @current_indentation+'_outstream += CJSV.'+renderer+"\n"
     end
 
     def function_body
