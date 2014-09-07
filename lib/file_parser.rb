@@ -31,7 +31,7 @@ module CJSV
     def sanitize_and_verify()
       @spaces_per_indent = 2
       @lines = @lines.reject{|line| line =~ /^\s*$/}.map { |line|
-        line.split('-#')[0].rstrip # Remove comment lines and trailing whitespace
+        line.split(/(\s|^)-#/)[0].rstrip # Remove comment lines and trailing whitespace
       }.reject{|line| line =~ /^\s*$/} # Reject empty lines
     end
 
