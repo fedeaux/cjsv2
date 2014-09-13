@@ -47,7 +47,6 @@ module CJSV
       elsif @render_strategy == 'condensed'
         render_condensed
       end
-
     end
 
     def render_simple
@@ -101,12 +100,13 @@ module CJSV
       @current_indentation+'_outstream += CJSV.'+renderer+"\n"
     end
 
-    def return_line(renderer)
-      @current_indentation+"return _outstream\n"
+    def return_line()
+      "\n"+' '*@spaces_per_indent+"  return _outstream\n"
     end
 
     def function_body
       render
+      add_return_line
       @function_body
     end
   end
