@@ -17,10 +17,6 @@ module CJSV
       @line
     end
 
-    def span_block?
-      (@line =~ /if|while|for|else|unless/i).is_a? Numeric
-    end
-
     def preprocess_line
       @indentation = @line.scan(/^\s*/)[0].size/@spaces_per_indent
       @line = @line.gsub(LineParserFactory.render_line_regex, '').strip

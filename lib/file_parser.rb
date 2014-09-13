@@ -99,6 +99,8 @@ module CJSV
 
       close_blocks_that_were_opened_in_a_higher_or_equal_indentation 0
       close_tags 0, 0
+
+      @cjsv_lines_renderer.add_return_line
     end
 
     def indentation

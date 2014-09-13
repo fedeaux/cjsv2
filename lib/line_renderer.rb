@@ -13,7 +13,7 @@ module CJSV
     end
 
     def add(indentation, parsed_line, close = false)
-      if indentation != @current_indentation or parsed_line.is_a? CoffeeLineParser
+      if indentation != @current_indentation or parsed_line.is_a? CoffeeLineParser or parsed_line.is_a? RenderLineParser
         render
         @current_indentation = indentation
       end
@@ -27,6 +27,10 @@ module CJSV
       elsif parsed_line.is_a? RenderLineParser
         @function_body += render_line parsed_line.line
       end
+    end
+
+    def add_return_line
+      @function_body += return_line
     end
 
     def queue_element_html(queue_element)
@@ -95,6 +99,10 @@ module CJSV
 
     def render_line(renderer)
       @current_indentation+'_outstream += CJSV.'+renderer+"\n"
+    end
+
+    def return_line(renderer)
+      @current_indentation+"return _outstream\n"
     end
 
     def function_body

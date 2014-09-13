@@ -16,3 +16,6 @@
         - if sera.sim
           #felicidade
         - a = b
+        .qual-e
+          + sera.que.partial()
+          .q
