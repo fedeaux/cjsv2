@@ -4,4 +4,4 @@ cjsv.rb is the entry point
 
 CJSV::FileParser
 -- Transform each line in a appropriate instance of (ArgsLineParser, CoffeeLineParser, RenderLineParser or CjsvLineParser)  using *LineParserFactory* lib/factory_line_parser.rb
--- Generates a function body with the help of LineRenderer
+-- Generates a function body with the help of LineRenderer lib/line_renderer.rb
