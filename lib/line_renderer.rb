@@ -105,8 +105,11 @@ module CJSV
     end
 
     def function_body
-      render
-      add_return_line
+      if @cjsv_lines_queue.length > 0
+        render
+        add_return_line
+      end
+
       @function_body
     end
   end

@@ -20,3 +20,10 @@
         _outstream += "<div class=\"q\"></div></div>"
       _outstream += "</div>"
     _outstream += "</div>"
+    return _outstream
+
+  other: () ->
+    _outstream=""
+
+    _outstream += "<div id=\"por\"><div id=\"que\"><span class=\"esse\"></span><span class=\"bug\"></span><span class=\"feio\"></span></div></div>"
+    return _outstream

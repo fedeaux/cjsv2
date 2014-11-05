@@ -30,6 +30,10 @@ def extends()
         'tag' => 'input',
         'attributes' => {'type' => 'text'}
       },
+      '_ei' => {
+        'tag' => 'input',
+        'attributes' => {'type' => 'email'}
+      },
       '_ni' => {
         'tag' => 'input',
         'attributes' => {'type' => 'numeric'}
