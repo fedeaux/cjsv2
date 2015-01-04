@@ -21,8 +21,8 @@ module CJSV
     def initialize()
       @config = {
         'debug' => false,
-        'input_dir' => 'cjsv/',
-        'output_dir' => 'app/',
+        'input_dir' => Dir.pwd+'/cjsv/',
+        'output_dir' => Dir.pwd+'/app/',
         'output_filename' => 'cjsv.coffee',
         'helpers_filename' => File.dirname(__FILE__)+'/helpers.coffee',
         'output_generated_file' => false,
